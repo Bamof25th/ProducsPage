@@ -3,7 +3,7 @@
 import { ProductCardComponent } from "@/components/product-card";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { FiFilter, FiChevronLeft, FiChevronRight, FiSearch } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts, selectProducts, selectTotalPages } from '@/redux/productSlice';
@@ -39,7 +39,7 @@ const categories = [
   "womens-watches"
 ];
 
-export default function Home() {
+function HomeContent() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -186,6 +186,14 @@ export default function Home() {
       </main>
       <Footer />
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
 
