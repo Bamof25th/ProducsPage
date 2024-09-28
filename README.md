@@ -1,3 +1,6 @@
+
+Done ✅:  GitHub => https://github.com/Bamof25th/ProducsPage Link => https://producs-page-2.vercel.app/
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
@@ -14,23 +17,34 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+* Functional Requirement :
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Use https://dummyjson.com/docs to find JSON contract for fetching products and product categories.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Display all categories and make it selectable (single-select).
 
-## Learn More
+3. Show products for the selected category otherwise show products from all categories when no category selected.
 
-To learn more about Next.js, take a look at the following resources:
+1. While fetching products use pagination parameter and keep size 10.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+(If given combination has 50 products we need to show all products in the single page without UI pagination but instead of fetching all products at once we have to fetch the data in batches i.e first 1-10 then 11 - 20.. so on and display whichever is fetched till now)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. Implement Search for the products.
 
-## Deploy on Vercel
+5. List down if there are any limitations of your app as comments in “App.js”.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Technical Requirement:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Use only functional components.
+
+2. Use Redux to store and retrieve product and category data.
+
+3. Selected Category and search input should be stored as queryparams
+
+4. Good UI and UX will brownie.
+
+
+
+
+
+
