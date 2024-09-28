@@ -4,7 +4,7 @@ import { ProductCardComponent } from "@/components/product-card";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useState, useEffect } from "react";
-import { FiFilter } from 'react-icons/fi'; // Make sure to install react-icons
+import { FiFilter, FiChevronLeft, FiChevronRight } from 'react-icons/fi'; // Make sure to install react-icons
 
 interface Product {
   id: number;
@@ -89,6 +89,18 @@ export default function Home() {
     setCurrentPage(1); // Reset to first page when changing category
   };
 
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      handlePageChange(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      handlePageChange(currentPage + 1);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Header />
@@ -128,20 +140,32 @@ export default function Home() {
                   <ProductCardComponent key={product.id} product={product} />
                 ))}
               </div>
-              <div className="mt-12 flex justify-center">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <button
-                    key={page}
-                    onClick={() => handlePageChange(page)}
-                    className={`mx-1 px-4 py-2 rounded-full text-sm font-medium ${
-                      currentPage === page
-                        ? "bg-indigo-600 text-white"
-                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
+              <div className="mt-12 flex justify-center items-center space-x-4">
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className={`p-2 rounded-full ${
+                    currentPage === 1
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                  }`}
+                >
+                  <FiChevronLeft className="h-6 w-6" />
+                </button>
+                <span className="text-gray-700 font-medium">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className={`p-2 rounded-full ${
+                    currentPage === totalPages
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                  }`}
+                >
+                  <FiChevronRight className="h-6 w-6" />
+                </button>
               </div>
             </>
           )}
