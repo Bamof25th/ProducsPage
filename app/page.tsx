@@ -4,24 +4,13 @@ import { ProductCardComponent } from "@/components/product-card";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useState, useEffect } from "react";
-import { FiFilter, FiChevronLeft, FiChevronRight } from 'react-icons/fi'; // Make sure to install react-icons
+import { FiFilter, FiChevronLeft, FiChevronRight, FiSearch } from 'react-icons/fi';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts, selectProducts, selectTotalPages } from '@/redux/productSlice';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { AppDispatch } from '@/redux/store';
 
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  thumbnail: string;
-  category: string; // Add this line
-  // Add other properties as needed
-}
-
-interface ProductResponse {
-  products: Product[];
-  total: number;
-  skip: number;
-  limit: number;
-}
+// Remove the unused Product interface
 
 const categories = [
   "beauty",
@@ -51,34 +40,39 @@ const categories = [
 ];
 
 export default function Home() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const products = useSelector(selectProducts);
+  const totalPages = useSelector(selectTotalPages);
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const limit = 12;
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    searchParams.get('category') || null
+  );
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
 
   useEffect(() => {
-    fetchProducts();
-  }, [currentPage, selectedCategory]); // Add selectedCategory as a dependency
-
-  const fetchProducts = async () => {
-    setIsLoading(true);
-    try {
-      let url = `https://dummyjson.com/products?limit=${limit}&skip=${(currentPage - 1) * limit}`;
-      if (selectedCategory) {
-        url = `https://dummyjson.com/products/category/${selectedCategory}?limit=${limit}&skip=${(currentPage - 1) * limit}`;
-      }
-      const response = await fetch(url);
-      const data: ProductResponse = await response.json();
-      setProducts(data.products);
-      setTotalPages(Math.ceil(data.total / limit));
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    } finally {
+    const fetchData = async () => {
+      setIsLoading(true);
+      await dispatch(fetchProducts({ 
+        page: currentPage, 
+        category: selectedCategory, 
+        search: searchTerm 
+      }));
       setIsLoading(false);
-    }
-  };
+    };
+    fetchData();
+  }, [dispatch, currentPage, selectedCategory, searchTerm]);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (selectedCategory) params.set('category', selectedCategory);
+    if (searchTerm) params.set('search', searchTerm);
+    router.push(`?${params.toString()}`);
+  }, [selectedCategory, searchTerm, router]);
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -86,7 +80,12 @@ export default function Home() {
 
   const handleCategoryChange = (category: string | null) => {
     setSelectedCategory(category);
-    setCurrentPage(1); // Reset to first page when changing category
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1);
   };
 
   const handlePreviousPage = () => {
@@ -108,8 +107,8 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-3xl font-bold mb-8 text-gray-900">Discover amazing products</h1>
           
-          {/* Category filter */}
-          <div className="mb-8 flex items-center space-x-4">
+          <div className="mb-8 flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
+            {/* Category filter */}
             <div className="relative flex-grow">
               <select
                 className="w-full p-3 pr-10 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -125,6 +124,20 @@ export default function Home() {
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                 <FiFilter className="h-5 w-5 text-gray-400" />
+              </div>
+            </div>
+
+            {/* Search input */}
+            <div className="relative flex-grow">
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className="w-full p-3 pl-10 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <FiSearch className="h-5 w-5 text-gray-400" />
               </div>
             </div>
           </div>
@@ -175,3 +188,13 @@ export default function Home() {
     </div>
   );
 }
+
+// Limitations:
+// 1. The app relies on the DummyJSON API, which may have limitations in terms of data availability and rate limits.
+// 2. The search functionality is implemented on the client-side, which may not be efficient for large datasets.
+// 3. The app doesn't handle network errors or API failures gracefully.
+// 4. There's no caching mechanism implemented, which could improve performance for frequently accessed data.
+// 5. The app doesn't support advanced filtering options beyond category selection.
+// 6. There's no product detail page or ability to view more information about a specific product.
+// 7. The app doesn't have user authentication or the ability to save favorite products.
+// 8. The responsive design might need further optimization for various screen sizes and devices.
