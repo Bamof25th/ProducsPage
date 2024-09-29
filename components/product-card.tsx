@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { FiStar } from 'react-icons/fi'; // Make sure to install react-icons
+import { FiStar } from 'react-icons/fi'; 
 
 interface Product {
   id: number;
@@ -8,7 +8,7 @@ interface Product {
   price: number;
   thumbnail: string;
   category: string;
-  rating: number; // Add this if it's available in your API response
+  rating: number; 
 }
 
 export function ProductCardComponent({ product }: { product: Product }) {

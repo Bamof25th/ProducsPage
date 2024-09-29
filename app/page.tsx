@@ -1,14 +1,23 @@
-"use client"
+"use client";
 
 import { ProductCardComponent } from "@/components/product-card";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useState, useEffect, Suspense } from "react";
-import { FiFilter, FiChevronLeft, FiChevronRight, FiSearch } from 'react-icons/fi';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts, selectProducts, selectTotalPages } from '@/redux/productSlice';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { AppDispatch } from '@/redux/store';
+import {
+  FiFilter,
+  FiChevronLeft,
+  FiChevronRight,
+  FiSearch,
+} from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchProducts,
+  selectProducts,
+  selectTotalPages,
+} from "@/redux/productSlice";
+import { useRouter, useSearchParams } from "next/navigation";
+import { AppDispatch } from "@/redux/store";
 
 // Remove the unused Product interface
 
@@ -36,7 +45,7 @@ const categories = [
   "womens-dresses",
   "womens-jewellery",
   "womens-shoes",
-  "womens-watches"
+  "womens-watches",
 ];
 
 function HomeContent() {
@@ -50,18 +59,22 @@ function HomeContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
-    searchParams.get('category') || null
+    searchParams.get("category") || null
   );
-  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
+  const [searchTerm, setSearchTerm] = useState(
+    searchParams.get("search") || ""
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      await dispatch(fetchProducts({ 
-        page: currentPage, 
-        category: selectedCategory, 
-        search: searchTerm 
-      }));
+      await dispatch(
+        fetchProducts({
+          page: currentPage,
+          category: selectedCategory,
+          search: searchTerm,
+        })
+      );
       setIsLoading(false);
     };
     fetchData();
@@ -69,8 +82,8 @@ function HomeContent() {
 
   useEffect(() => {
     const params = new URLSearchParams();
-    if (selectedCategory) params.set('category', selectedCategory);
-    if (searchTerm) params.set('search', searchTerm);
+    if (selectedCategory) params.set("category", selectedCategory);
+    if (searchTerm) params.set("search", searchTerm);
     router.push(`?${params.toString()}`);
   }, [selectedCategory, searchTerm, router]);
 
@@ -105,8 +118,10 @@ function HomeContent() {
       <Header />
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl font-bold mb-8 text-gray-900">Discover amazing products</h1>
-          
+          <h1 className="text-3xl font-bold mb-8 text-gray-900">
+            Discover amazing products
+          </h1>
+
           <div className="mb-8 flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
             {/* Category filter */}
             <div className="relative flex-grow">
@@ -118,7 +133,8 @@ function HomeContent() {
                 <option value="">All Categories</option>
                 {categories.map((category) => (
                   <option key={category} value={category}>
-                    {category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}
+                    {category.charAt(0).toUpperCase() +
+                      category.slice(1).replace("-", " ")}
                   </option>
                 ))}
               </select>
@@ -159,8 +175,8 @@ function HomeContent() {
                   disabled={currentPage === 1}
                   className={`p-2 rounded-full ${
                     currentPage === 1
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                      : "bg-indigo-600 text-white hover:bg-indigo-700"
                   }`}
                 >
                   <FiChevronLeft className="h-6 w-6" />
@@ -173,8 +189,8 @@ function HomeContent() {
                   disabled={currentPage === totalPages}
                   className={`p-2 rounded-full ${
                     currentPage === totalPages
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                      : "bg-indigo-600 text-white hover:bg-indigo-700"
                   }`}
                 >
                   <FiChevronRight className="h-6 w-6" />
@@ -198,11 +214,8 @@ export default function Home() {
 }
 
 // Limitations:
-// 1. The app relies on the DummyJSON API, which may have limitations in terms of data availability and rate limits.
-// 2. The search functionality is implemented on the client-side, which may not be efficient for large datasets.
-// 3. The app doesn't handle network errors or API failures gracefully.
-// 4. There's no caching mechanism implemented, which could improve performance for frequently accessed data.
-// 5. The app doesn't support advanced filtering options beyond category selection.
-// 6. There's no product detail page or ability to view more information about a specific product.
-// 7. The app doesn't have user authentication or the ability to save favorite products.
-// 8. The responsive design might need further optimization for various screen sizes and devices.
+// 1.App does not use search optimizations like debounce and lazy loading.
+// 2.App does not have a product detail page.
+// 3.We could have used revalidation to update the data on the client side if we had a real api.
+// 4.We could have used 12 products in a single page a s limit to perfect the ui/ux.
+// 5.redux is not required for this small app could  have used contextAPI instead.  

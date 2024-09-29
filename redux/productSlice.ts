@@ -28,7 +28,7 @@ const initialState: ProductState = {
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async ({ page, category, search }: { page: number; category: string | null; search: string }) => {
-    const limit = 12;
+    const limit = 10; // limit set to 10
     let url = `https://dummyjson.com/products?limit=${limit}&skip=${(page - 1) * limit}`;
     
     if (category) {
@@ -57,7 +57,7 @@ const productSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.products = action.payload.products;
-        state.totalPages = Math.ceil(action.payload.total / 12);
+        state.totalPages = Math.ceil(action.payload.total / 10);
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.status = 'failed';
