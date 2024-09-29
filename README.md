@@ -4,7 +4,8 @@ Done ✅:  GitHub => https://github.com/Bamof25th/ProducsPage Link => https://pr
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 
-// Limitations:
+ * Limitations:
+   
 // 1.App does not use search optimizations like debounce and lazy loading.
 // 2.App does not have a product detail page.
 // 3.We could have used revalidation to update the data on the client side if we had a real api.
