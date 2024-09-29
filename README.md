@@ -6,11 +6,11 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
  * Limitations:
    
-// 1.App does not use search optimizations like debounce and lazy loading.
-// 2.App does not have a product detail page.
-// 3.We could have used revalidation to update the data on the client side if we had a real api.
-// 4.We could have used 12 products in a single page a s limit to perfect the ui/ux.
-// 5.redux is not required for this small app could  have used contextAPI instead.  
+ 1. App does not use search optimizations like debounce and lazy loading.
+ 2. App does not have a product detail page.
+ 3. We could have used revalidation to update the data on the client side if we had a real api.
+ 4. We could have used 12 products in a single page a s limit to perfect the ui/ux.
+ 5. Using redux is not required for this small app could  have used contextAPI instead.  
 
 
 ## Getting Started
